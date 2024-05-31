@@ -1,24 +1,28 @@
-import React from 'react';
-import logo from './logo.svg';
+import React, { useState, useEffect } from 'react';
+import { Routes, Route } from 'react-router-dom';
 import './App.css';
+import Home from './pages/Home';
+import CreatePost from './pages/CreatePost';
+import EditPost from './pages/EditPost';
+import PostCard from './pages/PostCard';
 
 function App() {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    fetch('http://localhost:7070/posts')
+      .then((response) => response.json())
+      .then((json) => setPosts(json));
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="container">
+      <Routes>
+        <Route path="/" index element={<Home posts={posts} />} />
+        <Route path="/posts/new" element={<CreatePost />} />
+        <Route path="/posts/edit/:id" element={<EditPost />} />
+        <Route path="/posts/:id" element={<PostCard />} />
+      </Routes>
     </div>
   );
 }
